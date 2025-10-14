@@ -36,27 +36,27 @@ export default function HomeScreen() {
     }
 
     debounceTimer.current = setTimeout(() => {
-      console.log(" Loading more Page...", page);
+      console.log(" Loading more Page...", page); // Added this line to keep track of load more actions , since previously it was not working properly
       dispatch(fetchPosts({ page }));
     }, 100);
   }, [loading, refreshing, hasMore]);
 
   const handleRefresh = useCallback(() => {
-    console.log("Refresh triggered...");
+    console.log("Refresh triggered..."); // I added this line to keep track of refresh actions
     dispatch(resetAll());
     dispatch(fetchPosts({ page: 1 }));
   }, []);
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!loading) return null;
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="small" />
       </View>
     );
-  };
+  }, [loading]);
 
-  const renderEmpty = () => {
+  const renderEmpty = useCallback(() => {
     if (loading) return null;
     return (
       <View style={styles.empty}>
@@ -74,7 +74,7 @@ export default function HomeScreen() {
         ) : null}
       </View>
     );
-  };
+  }, [loading, error , dispatch]);
 
   return (
     <View style={styles.screen}>

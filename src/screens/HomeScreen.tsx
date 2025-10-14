@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
-import { useAppDispatch } from '../hooks/useAppDispatch';
-import { useAppSelector } from '../hooks/useAppSelector';
-import { fetchPosts , resetAll } from '../config/redux/postSlice';
-import PostItem, { ITEM_HEIGHT } from '../components/postItem';
-import { Post } from '../utils/types';
+} from "react-native";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { fetchPosts, resetAll } from "../config/redux/postSlice";
+import PostItem, { ITEM_HEIGHT } from "../components/postItem";
+import { Post } from "../utils/types";
 
 export default function HomeScreen() {
   const dispatch = useAppDispatch();
@@ -20,8 +20,9 @@ export default function HomeScreen() {
     (s) => s.posts
   );
 
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    // initial load
     if (items.length === 0) {
       dispatch(fetchPosts({ page: 1 }));
     }
@@ -29,11 +30,19 @@ export default function HomeScreen() {
 
   const handleLoadMore = useCallback(() => {
     if (loading || refreshing || !hasMore) return;
-    // page in state is the next page to request (see slice)
-    dispatch(fetchPosts({ page }));
-  }, [loading, refreshing, hasMore, page]);
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      console.log(" Loading more Page...", page);
+      dispatch(fetchPosts({ page }));
+    }, 100);
+  }, [loading, refreshing, hasMore]);
 
   const handleRefresh = useCallback(() => {
+    console.log("Refresh triggered...");
     dispatch(resetAll());
     dispatch(fetchPosts({ page: 1 }));
   }, []);
@@ -74,15 +83,18 @@ export default function HomeScreen() {
         keyExtractor={(item: Post) => item.id.toString()}
         renderItem={({ item }) => <PostItem item={item} />}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        ListEmptyComponent={renderEmpty}
+        onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
+        maintainVisibleContentPosition={{
+          minIndexForVisible: 0,
+        }}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
-        windowSize={5}
+        windowSize={10}
         removeClippedSubviews={true}
         getItemLayout={(_, index) => ({
           length: ITEM_HEIGHT,
@@ -95,16 +107,16 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f3f4f6', paddingTop: 12 },
-  footer: { padding: 12, alignItems: 'center' },
-  empty: { padding: 24, alignItems: 'center' },
+  screen: { flex: 1, backgroundColor: "#f3f4f6", paddingTop: 12 },
+  footer: { padding: 12, alignItems: "center" },
+  empty: { padding: 24, alignItems: "center" },
   emptyText: { fontSize: 16, marginBottom: 8 },
-  errorText: { color: 'red', marginBottom: 12 },
+  errorText: { color: "red", marginBottom: 12 },
   retryBtn: {
-    backgroundColor: '#2563eb',
+    backgroundColor: "#2563eb",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
   },
-  retryText: { color: '#fff', fontWeight: '600' },
+  retryText: { color: "#fff", fontWeight: "600" },
 });

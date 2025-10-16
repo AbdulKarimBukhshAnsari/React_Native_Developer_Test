@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../utils/types';
 import { fetchPostsApi } from '../../api/postApi';
 
-interface PostsState {
+export interface PostsState {
   items: Post[];
   page: number;
   limit: number;

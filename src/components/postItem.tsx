@@ -11,7 +11,7 @@ interface Props {
 const PostItemInner: React.FC<Props> = ({ item }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
+      <Text style={styles.title} numberOfLines={2}>{item.id + "    " + item.title}</Text>
       <Text style={styles.body} numberOfLines={3}>{item.body}</Text>
     </View>
   );

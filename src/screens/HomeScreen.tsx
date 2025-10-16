@@ -39,7 +39,7 @@ export default function HomeScreen() {
       console.log(" Loading more Page...", page); // Added this line to keep track of load more actions , since previously it was not working properly
       dispatch(fetchPosts({ page }));
     }, 100);
-  }, [loading, refreshing, hasMore]);
+  }, [loading, refreshing, hasMore , page]);
 
   const handleRefresh = useCallback(() => {
     console.log("Refresh triggered..."); // I added this line to keep track of refresh actions
@@ -83,24 +83,16 @@ export default function HomeScreen() {
         keyExtractor={(item: Post) => item.id.toString()}
         renderItem={({ item }) => <PostItem item={item} />}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.6}
+        onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        maintainVisibleContentPosition={{
-          minIndexForVisible: 0,
-        }}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={10}
-        removeClippedSubviews={true}
-        getItemLayout={(_, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
+        removeClippedSubviews={false}
       />
     </View>
   );

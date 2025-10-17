@@ -32,6 +32,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
@@ -39,3 +40,11 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+
+
+#Build credentials and FirBase Credentials
+credentials.json
+google-services.json
+reactnative-ea12e-firebase-adminsdk-fbsvc-63f0baf5aa.json
+

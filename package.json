@@ -10,9 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-firebase/app": "^23.4.1",
+    "@react-native-firebase/messaging": "^23.4.1",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
     "expo": "~54.0.13",
+    "expo-dev-client": "~6.0.15",
+    "expo-device": "~8.0.9",
+    "expo-notifications": "~0.32.12",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
     "react-native": "0.81.4",
